@@ -51,7 +51,7 @@ def stream_markup_timer(_, chat_id, played, dur):
 ## Inline without Timer Bar
 
 
-def stream_markup(_, chat_id):
+def stream_markup(_, chat_id, played, dur):
     bar = random.choice(selections)
     buttons = [
         [
