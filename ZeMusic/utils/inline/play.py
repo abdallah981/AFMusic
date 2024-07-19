@@ -34,7 +34,7 @@ def stream_markup_timer(_, videoid, chat_id, played, dur):
         [
             InlineKeyboardButton(
                 text= "‹ قائمة التحڪم ›",
-                callback_data=f"PanelMarkup {videoid}|{chat_id}",
+                callback_data=f"ADMIN {videoid}|{chat_id}",
             ),
         ],
         [
@@ -54,7 +54,7 @@ def stream_markup(_, videoid, chat_id):
         [
             InlineKeyboardButton(
                 text= "‹ قائمة التحڪم ›",
-                callback_data=f"PanelMarkup None|{chat_id}",
+                callback_data=f"ADMIN None|{chat_id}",
             ),
         ],
         [
@@ -95,11 +95,11 @@ def playlist_markup(_, videoid, user_id, ptype, channel, fplay):
         [
             InlineKeyboardButton(
                 text=_["P_B_1"],
-                callback_data=f"YukkiPlaylists {videoid}|{user_id}|{ptype}|a|{channel}|{fplay}",
+                callback_data=f"ModyPlaylists {videoid}|{user_id}|{ptype}|a|{channel}|{fplay}",
             ),
             InlineKeyboardButton(
                 text=_["P_B_2"],
-                callback_data=f"YukkiPlaylists {videoid}|{user_id}|{ptype}|v|{channel}|{fplay}",
+                callback_data=f"ModyPlaylists {videoid}|{user_id}|{ptype}|v|{channel}|{fplay}",
             ),
         ],
         [
