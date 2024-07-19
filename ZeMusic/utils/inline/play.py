@@ -6,7 +6,7 @@ from pyrogram.types import InlineKeyboardButton
 
 from ZeMusic.utils.formatters import time_to_seconds
 
-lnk= "https://t.me/" +config.CHANNEL_LINK
+lnk= "https://t.me/EF_19"
 
 selections = [
     "▁▄▂▇▄▅▄▅▃",
@@ -63,7 +63,7 @@ def stream_markup_timer(_, chat_id, played, dur):
         ],
         [
             InlineKeyboardButton(
-                text=config.CHANNEL_NAME, url=lnk
+                text="اقتباسات", url=lnk
             ),
         ],
         [
