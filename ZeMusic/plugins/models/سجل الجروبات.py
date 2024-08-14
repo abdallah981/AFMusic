@@ -1,9 +1,3 @@
-# This code is written by (C) TheTeamAlexa bot will send message to log group when someone add
-# this bot to new group make sure to star all projects
-# Copyright (C) 2021-2022 by Alexa_Help@ Github, < TheTeamAlexa >.
-# A Powerful Music Bot Property Of Rocks Indian Largest Chatting Group
-# All rights reserved. © Alisha © Alexa © Yukki
-
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from ZeMusic import app
