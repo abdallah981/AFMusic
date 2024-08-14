@@ -15,22 +15,33 @@ async def lul_message(chat_id: int, message: str):
     await app.send_message(chat_id=chat_id, text=message)
 
 
-@app.on_message(filters.new_chat_members)
+@app.on_message(filters.new_chat_members | filters.chat_type.channels)
 async def on_new_chat_members(client: Client, message: Message):
-    if (await client.get_me()).id in [user.id for user in message.new_chat_members]:
-        added_by = message.from_user.first_name if message.from_user else "مستخدم غير معروف"
-        added_id = message.from_user.id
+    me = await client.get_me()
+    chat_id = message.chat.id
+    chat_title = message.chat.title
+    served_chats = len(await get_served_chats())
 
-        matlabi_jhanto = message.chat.title
-        served_chats = len(await get_served_chats())
-        chat_id = message.chat.id
+    if message.chat.type == ChatType.SUPERGROUP or message.chat.type == ChatType.GROUP:
+        if me.id in [user.id for user in message.new_chat_members]:
+            added_by = message.from_user.first_name if message.from_user else "مستخدم غير معروف"
+            added_id = message.from_user.id
 
-        chat = await client.get_chat(int(chat_id))
-        cont = chat.members_count
+            cont = (await client.get_chat(chat_id)).members_count
+            chatusername = f"@{message.chat.username}" if message.chat.username else "ᴩʀɪᴠᴀᴛᴇ ᴄʜᴀᴛ"
+            lemda_text = f"🌹 تمت اضافه البوت الى مجموعة جديدة.\n\n┏━━━━━━━━━━━━━━━━━┓\n┣★ <b>𝙲𝙷𝙰𝚃</b> › : {chat_title}\n┣★ <b>𝙲𝙷𝙰𝚃 𝙸𝙳</b> › : {chat_id}\n┣★ <b>𝙲𝙷𝙰𝚃 𝙽𝙰𝙼𝙴</b> › : {chatusername}\n┣★ <b>𝙲𝙾𝚄𝙽𝚃</b> › : {cont}\n┣★ <b>𝚃𝙾𝚃𝙰𝙻 𝙲𝙷𝙰𝚃</b> › : {served_chats}\n┣★ <b>𝙰𝙳𝙳𝙴𝙳 𝙱𝚈</b> › :\n┗━━━ꪜ <a href='tg://user?id={added_id}'>{added_by}</a>"
+            await lul_message(LOGGER_ID, lemda_text)
+
+    elif message.chat.type == ChatType.CHANNEL:
+        # محاولة الحصول على عدد المشتركين في القناة
+        try:
+            cont = (await client.get_chat(chat_id)).members_count
+        except:
+            cont = "غير معروف"
         
-        if message.chat.username:
-            chatusername = f"@{message.chat.username}"
-        else:
-            chatusername = "ᴩʀɪᴠᴀᴛᴇ ᴄʜᴀᴛ"
-        lemda_text = f"🌹 تمت اضافه البوت الى مجموعه جديدة .\n\n┏━━━━━━━━━━━━━━━━━┓\n┣★ <b>𝙲𝙷𝙰𝚃</b> › : {matlabi_jhanto}\n┣★ <b>𝙲𝙷𝙰𝚃 𝙸𝙳</b> › : {chat_id}\n┣★ <b>𝙲𝙷𝙰𝚃 𝚄𝙽𝙰𝙼𝙴</b> › : {chatusername}\n┣★ <b>𝙲𝙾𝚄𝙽𝚃</b> › : {cont}\n┣★ <b>𝚃𝙾𝚃𝙰𝙻 𝙲𝙷𝙰𝚃</b> › : {served_chats}\n┣★ <b>𝙰𝙳𝙳𝙴𝙳 𝙱𝚈</b> › :\n┗━━━ꪜ <a href='tg://user?id={added_id}'>{added_by}</a>"
+        # محاولة الحصول على اسم المستخدم الذي أضاف البوت
+        added_by = message.from_user.first_name if message.from_user else "غير معروف"
+        
+        channel_username = f"@{message.chat.username}" if message.chat.username else "ᴩʀɪᴠᴀᴛᴇ ᴄʜᴀɴɴᴇʟ"
+        lemda_text = f"🌹 تمت اضافه البوت الى قناة جديدة.\n\n┏━━━━━━━━━━━━━━━━━┓\n┣★ <b>𝙲𝙷𝙰𝙽𝙽𝙴𝙻</b> › : {chat_title}\n┣★ <b>𝙲𝙷𝙰𝙽𝙽𝙴𝙻 𝙸𝙳</b> › : {chat_id}\n┣★ <b>𝙲𝙷𝙰𝙽𝙽𝙴𝙻 𝙽𝙰𝙼𝙴</b> › : {channel_username}\n┣★ <b>𝙲𝙾𝚄𝙽𝚃</b> › : {cont}\n┣★ <b>𝚃𝙾𝚃𝙰𝙻 𝙲𝙷𝙰𝚃</b> › : {served_chats}\n┣★ <b>𝙰𝙳𝙳𝙴𝙳 𝙱𝚈</b> › :\n┗━━━ꪜ <a href='tg://user?id={added_id}'>{added_by}</a>"
         await lul_message(LOGGER_ID, lemda_text)
