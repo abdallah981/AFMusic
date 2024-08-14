@@ -9,7 +9,7 @@ async def lul_message(chat_id: int, message: str):
     await app.send_message(chat_id=chat_id, text=message)
 
 
-@app.on_message(filters.new_chat_member)
+@app.on_message(filters.new_chat_members)
 async def on_new_chat_members(client: Client, message: Message):
     me = await client.get_me()
     chat_id = message.chat.id
