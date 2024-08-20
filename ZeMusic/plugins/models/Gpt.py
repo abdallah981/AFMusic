@@ -1,33 +1,49 @@
-from ZeMusic import app 
-import requests as r
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup 
-from pyrogram import filters 
+import requests
+import json
+from ZeMusic import app
+from pyrogram import Client
+from pyrogram import filters
+from pyrogram.types import Message
+from pyrogram import Client, filters
+from strings.filters import command
 
-API_URL = "https://sugoi-api.vercel.app/search"
+url = 'https://us-central1-chat-for-chatgpt.cloudfunctions.net/basicUserRequestBeta'
 
-@app.on_message(filters.command("bingsearch"))
-async def bing_search(dilop, message):
+def gpt(text) -> str:
+    headers = {
+        'Host': 'us-central1-chat-for-chatgpt.cloudfunctions.net',
+        'Connection': 'keep-alive',
+        'If-None-Match': 'W/"1c3-Up2QpuBs2+QUjJl/C9nteIBUa00"',
+        'Accept': '*/*',
+        'User-Agent': 'com.tappz.aichat/1.2.2 iPhone/15.6.1 hw/iPhone8_2',
+        'Content-Type': 'application/json',
+        'Accept-Language': 'en-GB,en;q=0.9'
+    }
+
+    data = {
+        'data': {
+            'message':text,
+        }
+    }
+
+    response = requests.post(url, headers=headers, data=json.dumps(data))
     try:
-        if len(message.command) == 1:
-            await message.reply_text("Please provide a keyword to search.")
-            return
+        result = response.json()["result"]["choices"][0]["text"]
+        return result
+    except:
+        return None
 
-        keyword = " ".join(message.command[1:])
-        params = {"keyword": keyword}
-        response = r.get(API_URL, params=params)
+def reply_gpt(client, message:Message):
+    text = message.text.split("سؤال ")[1]
+    reply_text = gpt(text)
+    chat_id = message.chat.id
+    if message.reply_to_message is not None:
+        message_id = message.reply_to_message.id
+    else:
+        message_id = None
+    client.send_message(chat_id=chat_id, text=reply_text + "\n\n\n تم استخدام أحدث إصدار من الذكاء الاصطناعي 3.5 مطور من قبل @N_1_F", reply_to_message_id=message_id)
 
-        if response.status_code == 200:
-            results = response.json()
-            if not results:
-                await message.reply_text("No results found.")
-            else:
-                message_text = ""
-                for result in results[:7]:
-                    title = result.get("title", "")
-                    link = result.get("link", "")
-                    message_text += f"{title}\n{link}\n\n"
-                await message.reply_text(message_text.strip())
-        else:
-            await message.reply_text("Sorry, something went wrong with the search.")
-    except Exception as e:
-        await message.reply_text(f"An error occurred: {str(e)}")
+@app.on_message(command("سؤال"))
+def reply(client, message:Message):
+    message.reply_text(f"**مرحبا بـك يا {message.from_user.mention}\n\n اكتب سؤالك بالكامل وسوف يتم الرد عليك فورا**")
+    reply_gpt(client, message)
