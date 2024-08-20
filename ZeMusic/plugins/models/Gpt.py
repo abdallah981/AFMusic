@@ -1,10 +1,8 @@
 import requests
 import json
 from ZeMusic import app
-from pyrogram import Client
-from pyrogram import filters
-from pyrogram.types import Message
 from pyrogram import Client, filters
+from pyrogram.types import Message
 from strings.filters import command
 
 url = 'https://us-central1-chat-for-chatgpt.cloudfunctions.net/basicUserRequestBeta'
@@ -22,7 +20,7 @@ def gpt(text) -> str:
 
     data = {
         'data': {
-            'message':text,
+            'message': text,
         }
     }
 
@@ -33,7 +31,7 @@ def gpt(text) -> str:
     except:
         return None
 
-def reply_gpt(client, message:Message):
+def reply_gpt(client, message: Message):
     text = message.text.split("سؤال ")[1]
     reply_text = gpt(text)
     chat_id = message.chat.id
@@ -41,9 +39,13 @@ def reply_gpt(client, message:Message):
         message_id = message.reply_to_message.id
     else:
         message_id = None
+
+    if reply_text is None:
+        reply_text = "عذراً، لم أتمكن من الحصول على رد من الذكاء الاصطناعي. حاول مرة أخرى لاحقاً."
+
     client.send_message(chat_id=chat_id, text=reply_text + "\n\n\n تم استخدام أحدث إصدار من الذكاء الاصطناعي 3.5 مطور من قبل @N_1_F", reply_to_message_id=message_id)
 
 @app.on_message(command("سؤال"))
-def reply(client, message:Message):
+def reply(client, message: Message):
     message.reply_text(f"**مرحبا بـك يا {message.from_user.mention}\n\n اكتب سؤالك بالكامل وسوف يتم الرد عليك فورا**")
     reply_gpt(client, message)
