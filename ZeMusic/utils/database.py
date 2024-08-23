@@ -21,7 +21,7 @@ playtypedb = mongodb.playtypedb
 skipdb = mongodb.skipmode
 sudoersdb = mongodb.sudoers
 usersdb = mongodb.tgusersdb
-
+chattopdb = mongodb.chatstats
 dersdb = mongodb.dere
 
 # Shifting to memory [mongo sucks often]
@@ -39,6 +39,24 @@ pause = {}
 playmode = {}
 playtype = {}
 skipmode = {}
+
+
+async def get_global_tops() -> dict:
+    results = {}
+    async for chat in chattopdb.find({"chat_id": {"$lt": 0}}):
+        for i in chat["vidid"]:
+            counts_ = chat["vidid"][i]["spot"]
+            title_ = chat["vidid"][i]["title"]
+            if counts_ > 0:
+                if i not in results:
+                    results[i] = {}
+                    results[i]["spot"] = counts_
+                    results[i]["title"] = title_
+                else:
+                    spot = results[i]["spot"]
+                    count_ = spot + counts_
+                    results[i]["spot"] = count_
+    return results
 
 
 async def is_search_enabled(chat_id):
