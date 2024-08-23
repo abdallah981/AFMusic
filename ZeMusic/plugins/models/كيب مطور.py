@@ -1,6 +1,6 @@
 from pyrogram import * 
 from pyrogram.types import * 
-from AnonX import app
+from ZeMusic import app
 from strings.filters import command
 import time
 from config import BOT_TOKEN, OWNER_ID
