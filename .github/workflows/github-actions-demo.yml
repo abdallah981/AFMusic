@@ -1,0 +1,18 @@
+name: GitHub Actions Demo
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+on: [push]
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🎉 تم تشغيل المهمة تلقائيًا بواسطة حدث ${{ github.event_name }} event."
+      - run: echo "🐧 يتم تشغيل هذه المهمة الآن على خادم ${{ runner.os }} server hosted by GitHub!"
+      - run: echo "🔎 اسم فرعك هو ${{ github.ref }} ومستودعك هو ${{ github.repository }}."
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - run: echo "💡 تم استنساخ مستودع ${{ github.repository }} إلى جهاز التشغيل.."
+      - run: echo "🖥️ سير العمل جاهز الآن لاختبار الكود على جهاز التشغيل."
+      - name: List files in the repository
+        run: |
+          ls ${{ github.workspace }}
+      - run: echo "🍏 حالة المهمة هي ${{ job.status }}."
